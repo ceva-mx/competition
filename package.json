@@ -2,19 +2,29 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "prisma": {
+    "seed": "node --loader ts-node/esm --experimental-specifier-resolution=node prisma/seed.ts"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "prisma-generate": "prisma generate",
+    "prisma-reset": "prisma migrate reset",
+    "prisma-dev": "prisma migrate dev"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@nuxtjs/i18n": "^8.0.0",
     "@nuxtjs/supabase": "^1.1.5",
     "@nuxtjs/tailwindcss": "^6.10.3",
+    "@prisma/client": "^5.7.1",
     "nuxt": "^3.9.0",
     "nuxt-primevue": "^0.2.2",
+    "prisma": "^5.7.1",
+    "ts-node": "^10.9.2",
     "vue": "^3.4.3",
     "vue-router": "^4.2.5"
   },

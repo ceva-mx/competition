@@ -1,0 +1,65 @@
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
+  output        = "../node_modules/.prisma/client"
+}
+
+model User {
+  uuid        String        @id
+  email       String
+  name        String
+  admin       Admin[]
+  participant Participant[]
+}
+
+model Participant {
+  uuid            String      @id
+  result          Result[]
+  User            User        @relation(fields: [userUuid], references: [uuid])
+  userUuid        String
+  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
+  competitionUuid String
+}
+
+model Admin {
+  uuid            String      @id
+  User            User        @relation(fields: [userUuid], references: [uuid])
+  userUuid        String
+  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
+  competitionUuid String
+}
+
+model Competition {
+  uuid        String        @id
+  name        String
+  posterUrl   String
+  description String
+  admin       Admin[]
+  participant Participant[]
+  route       Route[]
+}
+
+model Route {
+  uuid            String      @id
+  name            String
+  category        String
+  cost            Int
+  result          Result[]
+  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
+  competitionUuid String
+}
+
+model Result {
+  uuid            String      @id
+  result          Int
+  attempts        Int
+  Route           Route       @relation(fields: [routeUuid], references: [uuid])
+  routeUuid       String
+  Participant     Participant @relation(fields: [participantUuid], references: [uuid])
+  participantUuid String
+}

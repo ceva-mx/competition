@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/supabase',
-    '@nuxtjs/i18n',,
+    '@nuxtjs/i18n',
+    '@vueuse/nuxt',
     'nuxt-primevue',
   ],
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useEvent } from '@/composables/useEvent';
+import { useCompetition } from '@/composables/useCompetition';
 
 const route = useRoute();
-const { getEvent } = useEvent();
-const item = getEvent(Number(route?.params?.eventId));
+const { getCompetition } = useCompetition();
+const uuid = route.params.uuid as string;
+const item = await getCompetition(uuid);
 </script>
 
 <template>
   <div v-if="item">
-    <div>Event id: {{ item.id }}</div>
     <div>Event name: {{  item.name }}</div>
   </div>
 </template>

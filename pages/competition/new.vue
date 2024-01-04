@@ -1,6 +1,6 @@
 <template>
   <div>
-    create
+    create new copmetition
   </div>
 </template>
 

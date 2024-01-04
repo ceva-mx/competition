@@ -11,7 +11,7 @@ const { t } = useI18n({ useScope: 'local' });
       />
     </div>
 
-    <EventList />
+    <CompetitionsList />
   </div>
 </template>
 

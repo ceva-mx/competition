@@ -5,7 +5,7 @@ const { t } = useI18n({useScope: 'local'});
 
 const links = ref([
   { to: '/', label: t('home') },
-  { to: '/event', label: t('event') },
+  { to: '/competition', label: t('competition') },
   { to: '/overview', label: t('overview') },
 ]);
 </script>
@@ -48,6 +48,6 @@ const links = ref([
 en:
   home: Home
   overview: Overview
-  event: Events
+  competition: Competitions
 </i18n>
 

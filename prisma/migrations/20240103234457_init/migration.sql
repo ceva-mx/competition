@@ -49,7 +49,7 @@ CREATE TABLE "Route" (
 -- CreateTable
 CREATE TABLE "Result" (
     "uuid" TEXT NOT NULL,
-    "result" INTEGER NOT NULL,
+    "finish" INTEGER NOT NULL,
     "attempts" INTEGER NOT NULL,
     "routeUuid" TEXT NOT NULL,
     "participantUuid" TEXT NOT NULL,

@@ -1,4 +1,4 @@
-import { PrismaClient } from '../node_modules/.prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
 import type {
@@ -8,7 +8,7 @@ import type {
   Admin,
   Result,
   Participant,
-} from '../node_modules/.prisma/client';
+} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -61,7 +61,7 @@ function createResult(routeUuid: string, participantUuid: string): Result {
     routeUuid,
     participantUuid,
     attempts: faker.number.int({ min: 1, max: 20 }),
-    result: resuls[Math.floor(Math.random() * resuls.length)],
+    finish: resuls[Math.floor(Math.random() * resuls.length)],
   };
 }
 

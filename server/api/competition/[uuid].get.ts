@@ -14,7 +14,8 @@ export default defineEventHandler(async (event) => {
         name: true,
         posterUrl: true,
         description: true,
-      }
+        link: true,
+      },
     });
   } catch(error) {
     throw createError({

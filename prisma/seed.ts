@@ -26,6 +26,8 @@ function createCompetition(): Competition {
     name: faker.company.name(),
     posterUrl: faker.image.urlLoremFlickr({ category: 'nature' }),
     description: faker.commerce.productDescription(),
+    link: '',
+    isPublished: false,
   }
 }
 

@@ -17,20 +17,20 @@ model User {
 }
 
 model Participant {
-  uuid            String      @id
+  uuid            String       @id
   Result          Result[]
-  User            User        @relation(fields: [userUuid], references: [uuid])
-  userUuid        String
-  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
-  competitionUuid String
+  User            User?        @relation(fields: [userUuid], references: [uuid], onDelete: SetNull)
+  userUuid        String?
+  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
+  competitionUuid String?
 }
 
 model Admin {
-  uuid            String      @id
-  User            User        @relation(fields: [userUuid], references: [uuid])
-  userUuid        String
-  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
-  competitionUuid String
+  uuid            String       @id
+  User            User?        @relation(fields: [userUuid], references: [uuid], onDelete: SetNull)
+  userUuid        String?
+  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
+  competitionUuid String?
 }
 
 model Competition {
@@ -38,27 +38,29 @@ model Competition {
   name        String
   posterUrl   String
   description String
+  link        String?
+  isPublished Boolean       @default(false)
   Admin       Admin[]
   Participant Participant[]
   Route       Route[]
 }
 
 model Route {
-  uuid            String      @id
+  uuid            String       @id
   name            String
   category        String
   cost            Int
   Result          Result[]
-  Competition     Competition @relation(fields: [competitionUuid], references: [uuid])
-  competitionUuid String
+  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
+  competitionUuid String?
 }
 
 model Result {
-  uuid            String      @id
+  uuid            String       @id
   finish          Int
   attempts        Int
-  Route           Route       @relation(fields: [routeUuid], references: [uuid])
-  routeUuid       String
-  Participant     Participant @relation(fields: [participantUuid], references: [uuid])
-  participantUuid String
+  Route           Route?       @relation(fields: [routeUuid], references: [uuid], onDelete: SetNull)
+  routeUuid       String?
+  Participant     Participant? @relation(fields: [participantUuid], references: [uuid], onDelete: SetNull)
+  participantUuid String?
 }

@@ -6,18 +6,16 @@ const { avatar } = useUserInfo();
 
 <template>
   <div class="flex items-center">
-    <PrimeAvatar
+    <Avatar
       v-if="avatar"
       shape="circle"
       :image="avatar"
     />
 
-    <PrimeAvatar
+    <Avatar
       v-else
       shape="circle"
       icon="pi pi-user"
     />
   </div>
 </template>
-
-<style scoped></style>

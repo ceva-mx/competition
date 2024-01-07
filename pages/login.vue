@@ -11,14 +11,14 @@ const { loginWithGithub } = useLoginProvider();
 
 <template>
   <div class="flex flex-col w-64 gap-y-2">
-    <PrimeButton
+    <Button
       class="bg-black"
       icon="pi pi-github"
       :label="t('github')"
       @click="loginWithGithub"
     />
 
-    <PrimeButton
+    <Button
       icon="pi pi-google"
       :label="t('google')"
     />

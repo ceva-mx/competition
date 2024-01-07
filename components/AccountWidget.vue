@@ -18,7 +18,7 @@ const loginDialogVisible = ref(false);
       <UserAvatar class="mr-2" />
 
       <div class="flex flex-col items-end">
-        <span class="text-white">{{ userName }}</span>
+        <span>{{ userName }}</span>
         <span
           class="hover:underline cursor-pointer text-xs text-gray-400	"
           @click="logout"
@@ -38,14 +38,14 @@ const loginDialogVisible = ref(false);
           @click="navigate"
           v-text="t('login')"
         />
+
       </NuxtLinkLocale>
     </div>
   </div>
 </template>
 
-<style scoped></style>
-
 <i18n lang="yaml">
 en:
   login: Login
 </i18n>
+

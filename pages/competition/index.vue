@@ -1,13 +1,14 @@
 <script setup lang="ts">
 const { t } = useI18n({ useScope: 'local' });
+const localePath = useLocalePath()
 </script>
 
 <template>
   <div>
     <div class="flex justify-end mb-4">
-      <PrimeButton
-        :label="t('create_event')"
-        icon="pi pi-plus-circle"
+      <v-btn
+        :to="localePath('/competition/new')"
+        :text="t('create_event')"
       />
     </div>
 

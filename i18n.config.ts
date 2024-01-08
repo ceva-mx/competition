@@ -3,6 +3,7 @@ export default defineI18nConfig(() => ({
   messages: {
     en: {
       submit: 'Submit',
+      cancel: 'Cancel',
     },
   },
 }))

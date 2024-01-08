@@ -5,7 +5,8 @@ const localePath = useLocalePath()
 
 <template>
   <v-layout>
-    <v-app-bar>
+    <v-app-bar
+    >
       <template #append>
         <v-btn
           :to="localePath('/')"
@@ -43,9 +44,15 @@ const localePath = useLocalePath()
     </v-app-bar>
 
     <v-main>
-      <div class="pt-8">
-        <slot />
-      </div>
+      <v-container>
+        <v-row no-gutters>
+          <v-col>
+            <v-sheet>
+              <slot />
+            </v-sheet>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
   </v-layout>
 </template>

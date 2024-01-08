@@ -5,12 +5,18 @@ const localePath = useLocalePath()
 
 <template>
   <div>
-    <div class="flex justify-end mb-4">
-      <v-btn
-        :to="localePath('/competition/new')"
-        :text="t('create_event')"
-      />
-    </div>
+    <v-container>
+      <v-row no-gutters>
+        <v-col align="end">
+          <v-sheet>
+            <v-btn
+              :to="localePath('/competition/new')"
+              :text="t('create_event')"
+            />
+          </v-sheet>
+        </v-col>
+      </v-row>
+    </v-container>
 
     <CompetitionsList />
   </div>

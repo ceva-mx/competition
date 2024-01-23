@@ -1,4 +1,10 @@
+import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
+
 export default defineNuxtConfig({
+  build: {
+    transpile: ['vuetify'],
+  },
+
   devtools: {
     enabled: true,
   },
@@ -8,15 +14,31 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    '@invictus.codes/nuxt-vuetify',
     '@nuxtjs/google-fonts',
+    '@nuxtjs/eslint-module',
+    (_options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', (config) => {
+        // @ts-expect-error
+        config.plugins.push(vuetify({ autoImport: true }))
+      })
+    },
   ],
+
+  vite: {
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
+  },
 
   supabase: {
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/*'],
+      exclude: [
+        '/competition/my',
+      ],
     },
   },
 
@@ -32,9 +54,14 @@ export default defineNuxtConfig({
       treeshaking: true,
     },
   },
+
   googleFonts: {
     families: {
       Roboto: [400, 500],
     },
+  },
+
+  eslint: {
+    
   },
 });

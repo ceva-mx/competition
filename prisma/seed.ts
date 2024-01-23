@@ -2,122 +2,145 @@ import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
 import type {
-  User,
-  Competition,
-  Route,
-  Admin,
-  Result,
-  Participant,
+  user,
+  admin,
+  competition,
+  participant,
+  route,
+  timeset,
+  group,
+  result,
 } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-function createUser(): User {
-  return {
-    uuid: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-  };
-}
+const routesWithCategoryAndCost = [
+  { category: '5a', cost: 10 },
+  { category: '5b', cost: 20 },
+  { category: '5c', cost: 30 },
+  { category: '6a', cost: 40 },
+  { category: '6b', cost: 50 },
+  { category: '6c', cost: 60 },
+  { category: '7a', cost: 70 },
+  { category: '7b', cost: 80 },
+  { category: '7c', cost: 90 },
+  { category: '8a', cost: 100 },
+  { category: '8b', cost: 110 },
+  { category: '8c', cost: 120 },
+];
 
-function createCompetition(): Competition {
-  return {
-    uuid: faker.string.uuid(),
-    name: faker.company.name(),
-    posterUrl: faker.image.urlLoremFlickr({ category: 'nature' }),
-    description: faker.commerce.productDescription(),
-    link: '',
-    isPublished: false,
-  }
-}
-
-function createParticipant(userUuid: string, competitionUuid: string): Participant {
-  return {
-    uuid: faker.string.uuid(),
-    userUuid,
-    competitionUuid,
-  };
-}
-
-const categories = ['5a', '5b', '5c', '6a', '6b', '6c', '7a', '7b', '7c', '8a', '8b', '8c'];
-function createRoute(competitionUuid: string): Route {
-  return {
-    uuid: faker.string.uuid(),
-    name: faker.commerce.product(),
-    category: categories[Math.floor(Math.random() * categories.length)],
-    cost: faker.number.int({ min: 20, max: 150 }),
-    competitionUuid,
-  };
-}
-
-/**
- * 0 = none
- * 1 = zone
- * 2 = redpoint
- * 3 = top
- */
-const resuls = [0, 1, 2, 3];
-function createResult(routeUuid: string, participantUuid: string): Result {
-  return {
-    uuid: faker.string.uuid(),
-    routeUuid,
-    participantUuid,
-    attempts: faker.number.int({ min: 1, max: 20 }),
-    finish: resuls[Math.floor(Math.random() * resuls.length)],
-  };
-}
-
-function createAdmin(userUuid: string, competitionUuid: string): Admin {
-  return {
-    uuid: faker.string.uuid(),
-    userUuid,
-    competitionUuid,
-  }
-}
+const providers = [
+  'google',
+  'github',
+  'facebook',
+];
 
 async function seed() {
-  const users = [];
-  const competitions = [];
-  const participants = [];
-  const routes = [];
-  const result = [];
-  const admins = [];
+  const newUsers: Omit<user, 'uuid'>[] = Array(100)
+    .fill(0)
+    .map(() => ({
+      provider: providers[Math.floor(Math.random() * providers.length)],
+      email: faker.internet.email(),
+      createdAt: faker.date.recent({ days: 10 }),
+      isDeleted: false,
+    }));
+  
+  const newCompetitions: Omit<competition, 'uuid'>[] = Array(3)
+    .fill(0)
+    .map(() => ({
+      name: faker.commerce.product(),
+      posterUrl: faker.image.urlLoremFlickr({ category: 'nature' }),
+      description: faker.commerce.productDescription(),
+      link: null,
+      isPublished: false,
+      isDeleted: false,
+    }));
 
-  for (let i = 0; i < 30; i++) {
-    users.push(createUser());
-  }
+  await prisma.user.createMany({data: newUsers});
+  await prisma.competition.createMany({data: newCompetitions});
 
-  for (let i = 0; i < 3; i++) {
-    const competition = createCompetition();
-    const user = users[Math.floor(Math.random() * users.length)];
-    competitions.push(competition);
-    admins.push(createAdmin(user.uuid, competition.uuid));
+  const users: user[] = await prisma.user.findMany();
+  const competitions: competition[] = await prisma.competition.findMany();
 
-    for (let j = 0; j < 15; j++) {
-      const user = users[Math.floor(Math.random() * users.length)];
-      participants.push(createParticipant(user.uuid, competition.uuid));
-    }
+  competitions.forEach(async (competition, competitionIndex) => {
+    const numberOfRoutesPerCompetition = Math.ceil(Math.random() * 10 + 10);
+    const numberOfAdminsPerCompetition = Math.ceil(Math.random() * 2 + 1);
 
-    for (let j = 0; j < 30; j++) {
-      const route = createRoute(competition.uuid);
-      routes.push(route);
+    const timesetsForCompetition: Omit<timeset, 'uuid'>[] = Array(3)
+      .fill(0)
+      .map(() => ({
+        competitionUuid: competition.uuid,
+        startTime: faker.date.soon({ days: 10, refDate: faker.date.soon({ days: 5 }) }),
+        duration: 60 * 60 * 2, // two hours
+        isDeleted: false,
+      }));
 
-      const results = Math.floor(Math.random() * 10) + 5;
+    const groupsForCompetition: Omit<group, 'uuid'>[] = ['beginner', 'mature', 'professional']
+      .map((name) => ({
+        competitionUuid: competition.uuid,
+        name,
+        isDeleted: false,
+      }));
 
-      for (let j = 0; j < results; j++) {
-        const participant = participants[Math.floor(Math.random() * participants.length)];
-        result.push(createResult(route.uuid, participant.uuid));
-      }
-    }
+    await prisma.timeset.createMany({ data: timesetsForCompetition });
+    await prisma.group.createMany({ data: groupsForCompetition });
 
-  }
+    const timesets: timeset[] = await prisma.timeset.findMany();
+    const groups: group[] = await prisma.group.findMany();
 
-  await prisma.user.createMany({ data: users });
-  await prisma.competition.createMany({ data: competitions });
-  await prisma.route.createMany({ data: routes });
-  await prisma.participant.createMany({ data: participants });
-  await prisma.admin.createMany({ data: admins });
-  await prisma.result.createMany({ data: result });
+    const adminsForCompetition: Omit<admin, 'uuid'>[] = Array(numberOfAdminsPerCompetition)
+      .fill(0)
+      .map(() => ({
+        userUuid: users[Math.floor(Math.random() * users.length)].uuid,
+        competitionUuid: competition.uuid,
+        isDeleted: false,
+      }));
+
+    const participantsForCompetition: Omit<participant, 'uuid'>[] = users
+      .slice(competitionIndex * 30, (competitionIndex * 30) + 30)
+      .map((user) => ({
+        competitionUuid: competition.uuid,
+        userUuid: user.uuid,
+        timesetUuid: timesets[Math.floor(Math.random() * timesets.length)].uuid,
+        groupUuid: groups[Math.floor(Math.random() * groups.length)].uuid,
+        isDeleted: false,
+      }));
+
+    const newRoutesForCompetition: Omit<route, 'uuid'>[] = Array(numberOfRoutesPerCompetition)
+      .fill(0)
+      .map(() => {
+        const route = routesWithCategoryAndCost[Math.floor(Math.random() * routesWithCategoryAndCost.length)];
+
+        return {
+          competitionUuid: competition.uuid,
+          name: faker.commerce.product(),
+          cost: route.cost,
+          category: route.category,
+          isDeleted: false,
+        };
+      });
+
+    await prisma.admin.createMany({ data: adminsForCompetition });
+    await prisma.participant.createMany({ data: participantsForCompetition });
+    await prisma.route.createMany({ data: newRoutesForCompetition });
+
+    const participants: participant[] = await prisma.participant.findMany();
+    const routes: route[] = await prisma.route.findMany();
+
+    participants.forEach(async (participant) => {
+      const results: Omit<result, 'uuid'>[] = Array(numberOfRoutesPerCompetition)
+      .fill(0)
+      .map(() => ({
+        routeUuid: routes[Math.floor(Math.random() * routes.length)].uuid,
+        participantUuid: participant.uuid,
+        finish: [0, 1, 2, 3][Math.floor(Math.random() * 4)],
+        attempts: Math.ceil(Math.random() * 10),
+        isDeleted: false,
+      }));
+
+      await prisma.result.createMany({ data: results });
+    });
+  });
 }
 
 try {

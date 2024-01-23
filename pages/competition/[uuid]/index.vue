@@ -1,24 +1,24 @@
-<script setup lang="ts">
-import { useCompetitionStore } from '@/stores/competition';
-
-
-const route = useRoute();
-const uuid = route.params.uuid as string;
-const { getCompetition } = useCompetitionStore();
-const item = await getCompetition(uuid);
-const eventLink = ref(item.link);
-</script>
-
 <template>
   <div v-if="item">
     <div>Event name: {{ item.name }}</div>
-    <InputText
-      v-model="eventLink"
-      placeholder="Event link"
-    />
   </div>
 </template>
 
-<style scoped>
+<script setup lang="ts">
+import { useCompetitionStore } from '@/stores/competition';
 
-</style>
+const userStore = useUserStore();
+
+const route = useRoute();
+
+if (Object.keys(route.query).includes('preview')) {
+  // проверить есть ли у текущего юзера такой эвент
+  // если нет то редирект на ошибку
+
+  
+}
+
+const uuid = route.params.uuid as string;
+const { getCompetition } = useCompetitionStore();
+const item = await getCompetition(uuid);
+</script>

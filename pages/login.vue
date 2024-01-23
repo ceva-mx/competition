@@ -1,3 +1,24 @@
+<template>
+  <div class="d-flex justify-center">
+    <div
+      class="d-flex flex-column gr-2"
+      style="width: 250px"
+    >
+      <v-btn
+        class="bg-black"
+        prepend-icon="mdi-github"
+        :text="t('github')"
+        @click="loginWithGithub"
+      />
+        
+      <v-btn
+        prepend-icon="mdi-google"
+        :text="t('google')"
+      />
+    </div>
+  </div>
+</template>
+
 <script lang="ts" setup>
 const { t } = useI18n({ useScope: 'local' });
 import { useLoginProvider } from '@/composables/useLoginProvider';
@@ -8,22 +29,6 @@ definePageMeta({
 
 const { loginWithGithub } = useLoginProvider();
 </script>
-
-<template>
-  <div class="flex flex-col w-64 gap-y-2">
-    <Button
-      class="bg-black"
-      icon="pi pi-github"
-      :label="t('github')"
-      @click="loginWithGithub"
-    />
-
-    <Button
-      icon="pi pi-google"
-      :label="t('google')"
-    />
-  </div>
-</template>
 
 <i18n lang="yaml">
 en:

@@ -1,66 +1,107 @@
-datasource db {
-  url      = env("DATABASE_URL")
-  provider = "postgresql"
-}
-
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "darwin-arm64"]
 }
 
-model User {
-  uuid        String        @id
-  email       String
-  name        String
-  Admin       Admin[]
-  Participant Participant[]
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Participant {
-  uuid            String       @id
-  Result          Result[]
-  User            User?        @relation(fields: [userUuid], references: [uuid], onDelete: SetNull)
-  userUuid        String?
-  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
-  competitionUuid String?
+model admin {
+  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userUuid        String      @db.Uuid
+  competitionUuid String      @db.Uuid
+  isDeleted       Boolean     @default(false)
+  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  user            user        @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model Admin {
-  uuid            String       @id
-  User            User?        @relation(fields: [userUuid], references: [uuid], onDelete: SetNull)
-  userUuid        String?
-  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
-  competitionUuid String?
+model group {
+  uuid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competitionUuid String        @db.Uuid
+  name            String?       @db.VarChar(255)
+  isDeleted       Boolean       @default(false)
+  competition     competition   @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  participant     participant[]
 }
 
-model Competition {
-  uuid        String        @id
-  name        String
-  posterUrl   String
-  description String
-  link        String?
+model participant {
+  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competitionUuid String      @db.Uuid
+  userUuid        String      @db.Uuid
+  timesetUuid     String      @db.Uuid
+  groupUuid       String      @db.Uuid
+  isDeleted       Boolean     @default(false)
+  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  group           group       @relation(fields: [groupUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  timeset         timeset     @relation(fields: [timesetUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  user            user        @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  result          result[]
+}
+
+model profile {
+  uuid      String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userUuid  String  @unique @db.Uuid
+  name      String  @db.VarChar(255)
+  isDeleted Boolean @default(false)
+  user      user    @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model result {
+  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participantUuid String      @db.Uuid
+  routeUuid       String      @db.Uuid
+  finish          Int?        @db.SmallInt
+  attempts        Int?        @db.SmallInt
+  isDeleted       Boolean     @default(false)
+  participant     participant @relation(fields: [participantUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  route           route       @relation(fields: [routeUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model route {
+  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competitionUuid String      @db.Uuid
+  name            String?     @db.VarChar(255)
+  category        String?     @db.VarChar(255)
+  cost            Int?        @db.SmallInt
+  isDeleted       Boolean     @default(false)
+  result          result[]
+  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model timeset {
+  uuid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competitionUuid String        @db.Uuid
+  startTime       DateTime?     @db.Timestamptz(6)
+  duration        Int?          @db.SmallInt
+  isDeleted       Boolean       @default(false)
+  participant     participant[]
+  competition     competition   @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user {
+  uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email       String        @db.VarChar(255)
+  provider    String        @db.VarChar(255)
+  createdAt   DateTime?     @default(now()) @db.Timestamptz(6)
+  isDeleted   Boolean       @default(false)
+  admin       admin[]
+  participant participant[]
+  profile     profile?
+}
+
+model competition {
+  uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String?       @db.VarChar(255)
+  description String?
+  posterUrl   String?       @db.VarChar(255)
+  link        String?       @db.VarChar(255)
   isPublished Boolean       @default(false)
-  Admin       Admin[]
-  Participant Participant[]
-  Route       Route[]
-}
-
-model Route {
-  uuid            String       @id
-  name            String
-  category        String
-  cost            Int
-  Result          Result[]
-  Competition     Competition? @relation(fields: [competitionUuid], references: [uuid], onDelete: SetNull)
-  competitionUuid String?
-}
-
-model Result {
-  uuid            String       @id
-  finish          Int
-  attempts        Int
-  Route           Route?       @relation(fields: [routeUuid], references: [uuid], onDelete: SetNull)
-  routeUuid       String?
-  Participant     Participant? @relation(fields: [participantUuid], references: [uuid], onDelete: SetNull)
-  participantUuid String?
+  isDeleted   Boolean       @default(false)
+  admin       admin[]
+  group       group[]
+  participant participant[]
+  route       route[]
+  timeset     timeset[]
 }

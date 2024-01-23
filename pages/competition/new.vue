@@ -1,39 +1,3 @@
-<script setup lang="ts">
-import { useCompetitionStore } from '@/stores/competition';
-
-const competitionStore = useCompetitionStore();
-const { onFileUpload } = useUseFileUpload(); 
-
-const { t } = useI18n({ useScope: 'local' });
-const name = ref('');
-const link = ref('');
-const description = ref('');
-const loading = ref(false);
-
-const rules = {
-  name: [
-    (value: string) =>{
-      if (value) return true
-
-      return t('error.name');
-    }
-  ],
-};
-
-async function createCompetition() {
-  loading.value = true;
-
-  await competitionStore.createCompetition({
-    name: name.value,
-    link: link.value,
-    description: description.value,
-    posterUrl: '',
-  });
-
-  loading.value = false;
-}
-</script>
-
 <template>
   <v-card>
     <v-card-title>{{ t('title') }}</v-card-title>
@@ -73,6 +37,41 @@ async function createCompetition() {
     </v-card-actions>
   </v-card>
 </template>
+
+<script setup lang="ts">
+import { useCompetitionStore } from '@/stores/competition';
+
+const competitionStore = useCompetitionStore();
+
+const { t } = useI18n({ useScope: 'local' });
+const name = ref('');
+const link = ref('');
+const description = ref('');
+const loading = ref(false);
+
+const rules = {
+  name: [
+    (value: string) =>{
+      if (value) return true
+
+      return t('error.name');
+    }
+  ],
+};
+
+async function createCompetition() {
+  loading.value = true;
+
+  await competitionStore.createCompetition({
+    name: name.value,
+    link: link.value,
+    description: description.value,
+    posterUrl: '',
+  });
+
+  loading.value = false;
+}
+</script>
 
 <i18n lang="yaml">
 en:

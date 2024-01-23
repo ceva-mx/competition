@@ -12,7 +12,7 @@ export const useCompetitionStore = defineStore('competition', () => {
     const data = await $fetch(`/api/competition/${uuid}`);
 
     return data;
-  };
+  }
 
   async function getCompetitions() {
     const data = await $fetch('/api/competition');
@@ -41,7 +41,7 @@ export const useCompetitionStore = defineStore('competition', () => {
     }
 
     return false;
-  };
+  }
 
   return {
     competitions,

@@ -1,5 +1,4 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const user = useSupabaseUser();
   const { data: hasAccess } = await useFetch(
     '/api/user/hasAccess',
     {

@@ -1,9 +1,5 @@
-<script lang="ts" setup></script>
-
 <template>
   <pre>
-    123123
+    Home
   </pre>
 </template>
-
-<style scoped></style>

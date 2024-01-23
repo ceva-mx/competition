@@ -1,12 +1,6 @@
-<script lang="ts" setup>
-const { t } = useI18n({useScope: 'local'});
-const localePath = useLocalePath()
-</script>
-
 <template>
   <v-layout>
-    <v-app-bar
-    >
+    <v-app-bar>
       <template #append>
         <v-btn
           :to="localePath('/')"
@@ -27,19 +21,7 @@ const localePath = useLocalePath()
           vertical
         />
 
-        <v-btn
-          color="primary"
-          variant="outlined"
-          class="text-none"
-        >
-          <span>{{ t('login') }}</span>
-          <template v-slot:append>
-            <v-icon
-              color="primary"
-              icon="mdi-login"
-            />
-          </template>
-        </v-btn>
+        <account-widget />
       </template>
     </v-app-bar>
 
@@ -57,7 +39,10 @@ const localePath = useLocalePath()
   </v-layout>
 </template>
 
-<style scoped></style>
+<script lang="ts" setup>
+const { t } = useI18n({useScope: 'local'});
+const localePath = useLocalePath();
+</script>
 
 <i18n lang="yaml">
   en:
@@ -65,4 +50,4 @@ const localePath = useLocalePath()
     overview: Overview
     competition: Competitions
     login: Login
-  </i18n>
+</i18n>

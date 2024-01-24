@@ -1,107 +1,110 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "darwin-arm64"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "darwin-arm64"]
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp")]
 }
 
-model admin {
-  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userUuid        String      @db.Uuid
-  competitionUuid String      @db.Uuid
-  isDeleted       Boolean     @default(false)
-  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  user            user        @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model group {
-  uuid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  competitionUuid String        @db.Uuid
-  name            String?       @db.VarChar(255)
-  isDeleted       Boolean       @default(false)
-  competition     competition   @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  participant     participant[]
-}
-
-model participant {
-  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  competitionUuid String      @db.Uuid
-  userUuid        String      @db.Uuid
-  timesetUuid     String      @db.Uuid
-  groupUuid       String      @db.Uuid
-  isDeleted       Boolean     @default(false)
-  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  group           group       @relation(fields: [groupUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  timeset         timeset     @relation(fields: [timesetUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  user            user        @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  result          result[]
-}
-
-model profile {
-  uuid      String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userUuid  String  @unique @db.Uuid
-  name      String  @db.VarChar(255)
-  isDeleted Boolean @default(false)
-  user      user    @relation(fields: [userUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model result {
-  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  participantUuid String      @db.Uuid
-  routeUuid       String      @db.Uuid
-  finish          Int?        @db.SmallInt
-  attempts        Int?        @db.SmallInt
-  isDeleted       Boolean     @default(false)
-  participant     participant @relation(fields: [participantUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-  route           route       @relation(fields: [routeUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model route {
-  uuid            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  competitionUuid String      @db.Uuid
-  name            String?     @db.VarChar(255)
-  category        String?     @db.VarChar(255)
-  cost            Int?        @db.SmallInt
-  isDeleted       Boolean     @default(false)
-  result          result[]
-  competition     competition @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model timeset {
-  uuid            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  competitionUuid String        @db.Uuid
-  startTime       DateTime?     @db.Timestamptz(6)
-  duration        Int?          @db.SmallInt
-  isDeleted       Boolean       @default(false)
-  participant     participant[]
-  competition     competition   @relation(fields: [competitionUuid], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model user {
+model User {
   uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  email       String        @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
   provider    String        @db.VarChar(255)
-  createdAt   DateTime?     @default(now()) @db.Timestamptz(6)
-  isDeleted   Boolean       @default(false)
-  admin       admin[]
-  participant participant[]
-  profile     profile?
+  createdAt   DateTime      @default(now()) @db.Timestamptz(6)
+  isDeleted   Boolean?      @default(false)
+  Admin       Admin[]
+  Participant Participant[]
+  Profile     Profile?
 }
 
-model competition {
+model Profile {
+  uuid      String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user      String   @unique @db.Uuid
+  name      String?  @db.VarChar(255)
+  avaratUrl String?  @db.VarChar(255)
+  isDeleted Boolean? @default(false)
+  User      User     @relation(fields: [user], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Admin {
+  uuid        String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user        String      @db.Uuid
+  competition String      @db.Uuid
+  isDeleted   Boolean?    @default(false)
+  Competition Competition @relation(fields: [competition], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  User        User        @relation(fields: [user], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Competition {
   uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name        String?       @db.VarChar(255)
   description String?
   posterUrl   String?       @db.VarChar(255)
   link        String?       @db.VarChar(255)
-  isPublished Boolean       @default(false)
-  isDeleted   Boolean       @default(false)
-  admin       admin[]
-  group       group[]
-  participant participant[]
-  route       route[]
-  timeset     timeset[]
+  isPublished Boolean?      @default(false)
+  isDeleted   Boolean?      @default(false)
+  Admin       Admin[]
+  Group       Group[]
+  Participant Participant[]
+  Route       Route[]
+  Timeset     Timeset[]
+}
+
+model Group {
+  uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competition String        @db.Uuid
+  name        String        @db.VarChar(255)
+  isDeleted   Boolean?      @default(false)
+  Competition Competition   @relation(fields: [competition], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  Participant Participant[]
+}
+
+model Participant {
+  uuid        String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competition String      @db.Uuid
+  user        String      @db.Uuid
+  timeset     String      @db.Uuid
+  group       String      @db.Uuid
+  isDeleted   Boolean?    @default(false)
+  Competition Competition @relation(fields: [competition], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  Group       Group       @relation(fields: [group], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  Timeset     Timeset     @relation(fields: [timeset], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  User        User        @relation(fields: [user], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  Result      Result[]
+}
+
+model Result {
+  uuid        String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  participant String      @db.Uuid
+  route       String      @db.Uuid
+  finish      Int?        @default(0) @db.SmallInt
+  attempts    Int?        @default(0) @db.SmallInt
+  isDeleted   Boolean?    @default(false)
+  Participant Participant @relation(fields: [participant], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+  Route       Route       @relation(fields: [route], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Route {
+  uuid        String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competition String      @db.Uuid
+  name        String      @db.VarChar(255)
+  category    String?     @db.VarChar(255)
+  cost        Int?        @db.SmallInt
+  isDeleted   Boolean?    @default(false)
+  Result      Result[]
+  Competition Competition @relation(fields: [competition], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Timeset {
+  uuid        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  competition String        @db.Uuid
+  startTime   DateTime      @db.Timestamptz(6)
+  duration    Int           @db.SmallInt
+  isDeleted   Boolean?      @default(false)
+  Participant Participant[]
+  Competition Competition   @relation(fields: [competition], references: [uuid], onDelete: NoAction, onUpdate: NoAction)
 }

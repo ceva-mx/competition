@@ -10,7 +10,7 @@
         :text="t('github')"
         @click="loginWithGithub"
       />
-        
+
       <v-btn
         prepend-icon="mdi-google"
         :text="t('google')"
@@ -20,13 +20,13 @@
 </template>
 
 <script lang="ts" setup>
-const { t } = useI18n({ useScope: 'local' });
 import { useLoginProvider } from '@/composables/useLoginProvider';
 
 definePageMeta({
   layout: 'login',
 });
 
+const { t } = useI18n({ useScope: 'local' });
 const { loginWithGithub } = useLoginProvider();
 </script>
 

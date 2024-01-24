@@ -4,7 +4,7 @@
       <v-list-item
         v-for="item in competitionStore.competitions"
         :key="item.uuid"
-        :title="item.name"
+        :title="item.name || item.uuid"
         :to="localePath(`/competition/${item.uuid}`)"
       >
         <template #append>
@@ -55,11 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { useCompetitionStore } from '@/stores/competition';
 import type { Competition } from '@prisma/client';
+import { useCompetitionStore } from '@/stores/competition';
 
 const { t } = useI18n({ useScope: 'local' });
-const localePath = useLocalePath()
+const localePath = useLocalePath();
 const competitionStore = useCompetitionStore();
 
 onMounted(() => {
@@ -72,6 +72,7 @@ const itemToDelete = ref<Competition | null>(null);
 const isDialogVisible = computed(() => !!itemToDelete.value);
 
 const loading = ref(false);
+
 async function deleteItem() {
   loading.value = true;
   await competitionStore.deleteCompetition(itemToDelete.value?.uuid || '');

@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async () => {
 
-  return prisma.competition.findMany({
+  return await prisma.competition.findMany({
     where: {
       uuid: '48dd6dae-7067-4d78-9775-268579ab4036',
     },

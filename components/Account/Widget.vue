@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AccountMenu v-if="userStore.user" />
+    <AccountMenu v-if="userStore.isUserLoggegIn" />
 
     <div v-else>
       <NuxtLinkLocale

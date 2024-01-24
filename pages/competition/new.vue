@@ -52,10 +52,12 @@ const loading = ref(false);
 const rules = {
   name: [
     (value: string) =>{
-      if (value) return true
+      if (value) {
+        return true;
+      }
 
       return t('error.name');
-    }
+    },
   ],
 };
 
@@ -66,7 +68,6 @@ async function createCompetition() {
     name: name.value,
     link: link.value,
     description: description.value,
-    posterUrl: '',
   });
 
   loading.value = false;

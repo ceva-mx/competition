@@ -19,8 +19,8 @@ export default defineNuxtConfig({
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error
-        config.plugins.push(vuetify({ autoImport: true }))
-      })
+        config.plugins.push(vuetify({ autoImport: true }));
+      });
     },
   ],
 
@@ -37,16 +37,17 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/confirm',
       exclude: [
-        '/competition/my',
+        '/',
+        '/competition',
       ],
     },
   },
 
   i18n: {
     locales: ['en', 'fr'],
-    strategy: 'prefix',
+    strategy: 'prefix_except_default',
     defaultLocale: 'en',
-    vueI18n: "./i18n.config.ts",
+    vueI18n: './i18n.config.ts',
   },
 
   vuetify: {
@@ -59,9 +60,5 @@ export default defineNuxtConfig({
     families: {
       Roboto: [400, 500],
     },
-  },
-
-  eslint: {
-    
   },
 });

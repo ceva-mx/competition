@@ -6,11 +6,12 @@ export default defineEventHandler(async (event) => {
   try {
     const uuid = getRouterParam(event, 'uuid');
     const data = await readBody(event);
-
-    return await prisma.competition.update({
+    const competition = await prisma.competition.update({
       where: { uuid },
       data,
     });
+
+    return competition;
   } catch(error) {
     throw createError({
       statusCode: 400,

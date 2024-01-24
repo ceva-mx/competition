@@ -5,10 +5,10 @@ const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   try {
     const uuid = getRouterParam(event, 'uuid');
-
-    return await prisma.competition.findFirstOrThrow({
+    const competition = await prisma.competition.findFirstOrThrow({
       where: {
         uuid,
+        isDeleted: false,
       },
       select: {
         name: true,
@@ -18,6 +18,8 @@ export default defineEventHandler(async (event) => {
         isPublished: true,
       },
     });
+
+    return competition;
   } catch(error) {
     throw createError({
       statusCode: 404,

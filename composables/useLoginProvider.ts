@@ -1,16 +1,19 @@
 export const useLoginProvider = () => {
   const { auth } = useSupabaseClient();
-  const userStore = useUserStore();
 
   const loginWithGithub = async () => {
     const { error } = await auth.signInWithOAuth({
       provider: 'github',
+      options: {
+        redirectTo: 'http://localhost:3000/confirm',
+      },
     });
 
-    if (!error) {
-      userStore.creatuUserIfNotExist();
-    } else {
-      console.warn(error);
+    if (error) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: error.message,
+      });
     }
   };
 

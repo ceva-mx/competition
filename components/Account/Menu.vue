@@ -9,7 +9,7 @@
         class="cursor-pointer"
       />
     </template>
-        
+
     <v-card>
       <v-card-text>
         <div class="mx-auto text-center">

@@ -1,22 +1,19 @@
 import { PrismaClient } from '@prisma/client';
-import type { Competition } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import type { Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    const data: Competition = {
-      uuid: faker.string.uuid(),
+    const data: Prisma.CompetitionCreateInput = {
       name: body.name,
       link: body.link,
       description: body.description,
-      posterUrl: '',
-      isPublished: false,
     };
+    const competition = await prisma.competition.create({ data });
 
-    return await prisma.competition.create({ data });
+    return competition;
   } catch(e) {
     return false;
   }

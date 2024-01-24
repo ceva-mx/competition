@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Competition } from '@prisma/client';
-
-export type NewCompetition = Omit<Competition, 'uuid' | 'isPublished'>;
+import type { Prisma, Competition } from '@prisma/client';
 
 export const useCompetitionStore = defineStore('competition', () => {
   const competitions = ref<Competition[]>([]);
@@ -15,15 +13,15 @@ export const useCompetitionStore = defineStore('competition', () => {
   }
 
   async function getCompetitions() {
-    const data = await $fetch('/api/competition');
+    // const data = await $fetch('/api/competition');
 
-    competitions.value = data;
+    // competitions.value = data;
   }
 
-  async function createCompetition(newCompetition: NewCompetition) {
+  async function createCompetition(competition: Prisma.CompetitionCreateInput) {
     const isCreateSuccess = await $fetch('/api/competition', {
       method: 'post',
-      body: newCompetition,
+      body: competition,
     });
 
     if (isCreateSuccess) {

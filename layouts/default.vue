@@ -45,9 +45,9 @@ const localePath = useLocalePath();
 </script>
 
 <i18n lang="yaml">
-  en:
-    home: Home
-    overview: Overview
-    competition: Competitions
-    login: Login
+en:
+  home: Home
+  overview: Overview
+  competition: Competitions
+  login: Login
 </i18n>

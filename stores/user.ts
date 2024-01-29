@@ -5,13 +5,13 @@ export const useUserStore = defineStore('user', () => {
   const isUserLoggegIn = computed(() => !!user.value);
 
   async function login() {
-    const prismaUser = await $fetch('/api/user/login');
-
-    user.value = prismaUser;
+    user.value = await $fetch('/api/user/login');
   }
 
   onMounted(() => {
-    login();
+    if (!user.value) {
+      login();
+    }
   });
 
   return {

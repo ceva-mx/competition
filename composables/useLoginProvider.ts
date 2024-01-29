@@ -1,9 +1,27 @@
+import type { Provider } from '@supabase/gotrue-js';
+
+type LoginResult = {
+  isSuccess: boolean,
+  message?: string,
+};
+
+const supportedProviders = [
+  'github',
+];
+
 export const useLoginProvider = () => {
   const { auth } = useSupabaseClient();
 
-  const loginWithGithub = async () => {
+  async function login(provider: Provider): Promise<LoginResult> {
+    if (!supportedProviders.includes(provider)) {
+      return {
+        isSuccess: false,
+        message: `Login provider for ${provider} is not implemented yet!`,
+      };
+    }
+
     const { error } = await auth.signInWithOAuth({
-      provider: 'github',
+      provider,
       options: {
         redirectTo: 'http://localhost:3000/confirm',
       },
@@ -15,7 +33,9 @@ export const useLoginProvider = () => {
         statusMessage: error.message,
       });
     }
-  };
+
+    return { isSuccess: true };
+  }
 
   const logout = async () => {
     const { error } = await auth.signOut();
@@ -26,7 +46,7 @@ export const useLoginProvider = () => {
   };
 
   return {
-    loginWithGithub,
+    login,
     logout,
   };
 };

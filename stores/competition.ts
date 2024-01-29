@@ -4,7 +4,7 @@ import type { Prisma, Competition } from '@prisma/client';
 export const useCompetitionStore = defineStore('competition', () => {
   const competitions = ref<Competition[]>([]);
   const router = useRouter();
-  const localePath = useLocalePath();
+  const { localePath } = useLocalization();
 
   async function getCompetition(uuid: string) {
     const data = await $fetch(`/api/competition/${uuid}`);
@@ -12,10 +12,10 @@ export const useCompetitionStore = defineStore('competition', () => {
     return data;
   }
 
-  async function getCompetitions() {
-    // const data = await $fetch('/api/competition');
+  async function getCompetitionList() {
+    const data = await $fetch('/api/competition/list');
 
-    // competitions.value = data;
+    competitions.value = data;
   }
 
   async function createCompetition(competition: Prisma.CompetitionCreateInput) {
@@ -25,7 +25,7 @@ export const useCompetitionStore = defineStore('competition', () => {
     });
 
     if (isCreateSuccess) {
-      await getCompetitions();
+      await getCompetitionList();
       router.push(localePath('/competition'));
     }
   }
@@ -44,7 +44,7 @@ export const useCompetitionStore = defineStore('competition', () => {
   return {
     competitions,
     getCompetition,
-    getCompetitions,
+    getCompetitionList,
     createCompetition,
     deleteCompetition,
   };

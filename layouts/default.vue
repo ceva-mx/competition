@@ -5,14 +5,14 @@
         <v-btn
           :to="localePath('/')"
           :exact="true"
-          :text="t('home')"
+          :text="transateLocal('home')"
         />
 
         <v-btn
           class="ms-1"
           :to="localePath('/competition')"
           :exact="true"
-          :text="t('competition')"
+          :text="transateLocal('competition')"
         />
 
         <v-divider
@@ -40,8 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-const { t } = useI18n({useScope: 'local'});
-const localePath = useLocalePath();
+const { localePath, transateLocal } = useLocalization();
 </script>
 
 <i18n lang="yaml">

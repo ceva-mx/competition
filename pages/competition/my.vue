@@ -6,7 +6,7 @@
           <v-sheet>
             <v-btn
               :to="localePath('/competition/new')"
-              :text="t('create_event')"
+              :text="transateLocal('create_event')"
             />
           </v-sheet>
         </v-col>
@@ -18,8 +18,7 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n({ useScope: 'local' });
-const localePath = useLocalePath();
+const { localePath, transateLocal } = useLocalization();
 </script>
 
 <i18n lang="yaml">

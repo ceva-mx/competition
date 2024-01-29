@@ -33,18 +33,18 @@
         <v-card>
           <v-card-title>Confirm delete</v-card-title>
 
-          <v-card-text>{{ t('confirm_delete', [itemToDelete?.name]) }}</v-card-text>
+          <v-card-text>{{ transateLocal('confirm_delete', [itemToDelete?.name]) }}</v-card-text>
 
           <v-card-actions>
             <v-btn
               color="red"
-              :text="$t('sumbit')"
+              :text="transateGlobal('submit')"
               :loading="loading"
               @click.prevent="deleteItem"
             />
 
             <v-btn
-              :text="$t('cancel')"
+              :text="transateGlobal('cancel')"
               @click.prevent="itemToDelete = null"
             />
           </v-card-actions>
@@ -58,13 +58,16 @@
 import type { Competition } from '@prisma/client';
 import { useCompetitionStore } from '@/stores/competition';
 
-const { t } = useI18n({ useScope: 'local' });
-const localePath = useLocalePath();
+const {
+  localePath,
+  transateLocal,
+  transateGlobal,
+} = useLocalization();
 const competitionStore = useCompetitionStore();
 
 onMounted(() => {
   if (!competitionStore.competitions.length) {
-    competitionStore.getCompetitions();
+    competitionStore.getCompetitionList();
   }
 });
 

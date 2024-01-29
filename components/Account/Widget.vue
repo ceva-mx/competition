@@ -12,7 +12,7 @@
           v-ripple
           :href="href"
           @click="navigate"
-          v-text="t('login')"
+          v-text="transateLocal('login')"
         />
       </NuxtLinkLocale>
     </div>
@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 const userStore = useUserStore();
-const { t } = useI18n({ useScope: 'local' });
+const { transateLocal } = useLocalization();
 </script>
 
 <i18n lang="yaml">

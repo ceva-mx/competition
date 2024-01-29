@@ -13,17 +13,13 @@ const user = useSupabaseUser();
 const { query } = useRoute();
 const userStore = useUserStore();
 
-watch(
-  user,
-  async () => {
-    if (user.value) {
-      await userStore.login();
+watch(user, async () => {
+  if (user.value) {
+    await userStore.login();
 
-      const to = (query.redirectTo as string) ?? '/';
+    const to = (query.redirectTo as string) ?? '/';
 
-      return navigateTo(to, { replace: true });
-    }
-  },
-  { immediate: true }
-);
+    return navigateTo(to, { replace: true });
+  }
+}, { immediate: true });
 </script>

@@ -30,7 +30,7 @@
               rounded
               :to="{ path: href }"
               variant="text"
-              :text="t('my_competition')"
+              :text="transateLocal('my_competition')"
             />
           </NuxtLinkLocale>
 
@@ -51,9 +51,8 @@
 
 <script setup lang="ts">
 const userStore = useUserStore();
-
 const { logout } = useLoginProvider();
-const { t } = useI18n({ useScope: 'local' });
+const { transateLocal } = useLocalization();
 </script>
 
 <i18n lang="yaml">

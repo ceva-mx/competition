@@ -1,18 +1,18 @@
 <template>
   <v-card>
-    <v-card-title>{{ t('title') }}</v-card-title>
+    <v-card-title>{{ transateLocal('title') }}</v-card-title>
 
     <v-card-text>
       <v-form>
         <v-text-field
           v-model="name"
           :rules="rules.name"
-          :label="t('name_label')"
+          :label="transateLocal('name_label')"
         />
 
         <v-text-field
           v-model="link"
-          :label="t('link_label')"
+          :label="transateLocal('link_label')"
         />
 
         <v-file-input
@@ -20,8 +20,8 @@
         />
 
         <v-textarea
-          :label="t('description_label')"
-          :placeholder="t('description_placeholder')"
+          :label="transateLocal('description_label')"
+          :placeholder="transateLocal('description_placeholder')"
         />
       </v-form>
     </v-card-text>
@@ -30,7 +30,7 @@
       <v-btn
         type="submit"
         color="success"
-        :text="$t('submit')"
+        :text="transateGlobal('submit')"
         :loading="loading"
         @click.prevent="createCompetition"
       />
@@ -43,7 +43,7 @@ import { useCompetitionStore } from '@/stores/competition';
 
 const competitionStore = useCompetitionStore();
 
-const { t } = useI18n({ useScope: 'local' });
+const { transateLocal, transateGlobal } = useLocalization();
 const name = ref('');
 const link = ref('');
 const description = ref('');
@@ -56,7 +56,7 @@ const rules = {
         return true;
       }
 
-      return t('error.name');
+      return transateLocal('error.name');
     },
   ],
 };
